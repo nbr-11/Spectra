@@ -28,7 +28,7 @@ const NavBar:React.FC  = () => {
     </div>
     
     <div className='text-4xl'>
-      <button onClick={(e:React.MouseEvent<HTMLButtonElement>)=>{
+      <button onClick={()=>{
          toggleTheme((prev:boolean) => !prev);
       }}>
       {

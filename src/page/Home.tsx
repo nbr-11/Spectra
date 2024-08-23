@@ -21,7 +21,7 @@ const Home:React.FC = () => {
             onChange={(e:React.ChangeEvent<HTMLInputElement>) => {
                 setMnemonics(e.target.value);
             }}/>
-            <button onClick={(e:React.MouseEvent<HTMLButtonElement>) => {
+            <button onClick={() => {
                 if(mnemonics.length == 0){
                     setMnemonics(generateMnemonic());
                 } else{
