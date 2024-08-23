@@ -1,5 +1,4 @@
 import React from "react";
-import { useState } from "react";
 import { generateMnemonic } from "bip39";
 import { validateMnemonic } from "bip39";
 import { useNavigate } from "react-router-dom";
