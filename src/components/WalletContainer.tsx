@@ -1,19 +1,21 @@
 import React from "react";
 import { useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams} from "react-router-dom";
 import DownArrow from "../logo/DownArrow";
 import { AddSolWallet } from "../utils/Sol";
 import { validateMnemonic } from "bip39";
 import Wallet from "./Wallet";
+import { AddEthWallets } from "../utils/Eth";
+import { useMnemonicsContext } from "../context/MnemonicsContext";
 
 
 
 const WalletContainer: React.FC = () => {
     const { chain } = useParams();
     const [wallets, setWallets] = useState<Array<{ public_key: string, private_key: string }>>([]);
-    const [activeWallet, setActiveWallet] = useState<{ public_key: string, private_key: string }>();
+    const [activeWallet, setActiveWallet] = useState<{ public_key: string, private_key: string , name:string}>();
     const [isMenuActive, setIsMenuActive] = useState(false);
-    const [searchParams] = useSearchParams();
+    const {mnemonics, setMnemonics} = useMnemonicsContext();
 
     return (
         <div className="w-full min-h-[85%] pt-2">
@@ -24,7 +26,7 @@ const WalletContainer: React.FC = () => {
                             activeWallet === undefined ? (
                                 "No wallet found"
                             ) : (
-                                `${activeWallet.public_key}`
+                                `${activeWallet.name} ${activeWallet.public_key.substring(0,3)}...${activeWallet.public_key.substring(activeWallet.public_key.length -3)}`
                             )
                         }
 
@@ -44,7 +46,7 @@ const WalletContainer: React.FC = () => {
                                             <h1 className="text-xl text-center font-thin">No Wallets found</h1>
                                         ) : (
                                             wallets.map((wallet, index) => {
-                                                return <Wallet index={index} wallet={wallet}/>
+                                                return <Wallet key={index} activeWallet={activeWallet} setActiveWallet={setActiveWallet} index={index} wallet={wallet}/>
                                             })
                                         )
                                     }
@@ -53,16 +55,27 @@ const WalletContainer: React.FC = () => {
                                 <div className="flex justify-center pb-2">
                                     <button onClick={() => {
                                         if (chain == "sol") {
-                                            if (searchParams.get('mnemonics') == undefined || !validateMnemonic(searchParams.get('mnemonics') as string)) {
+                                            if (mnemonics == undefined || !validateMnemonic( mnemonics as string)) {
                                                 alert('not a valid mnemonic');
                                             }
-                                            const wallet = AddSolWallet(wallets.length, searchParams.get('mnemonics') as string);
+                                            const wallet = AddSolWallet(wallets.length, mnemonics as string);
 
                                             setWallets((prev) => {
                                                 return [...prev, wallet];
                                             });
 
                                             console.log(wallet);
+                                        }
+                                        else if(chain == "eth"){
+                                            if (mnemonics == undefined || !validateMnemonic(mnemonics as string)) {
+                                                alert('not a valid mnemonic');
+                                            }
+                                            const wallet = AddEthWallets(wallets.length, mnemonics as string);
+
+                                            setWallets((prev) => {
+                                                return [...prev, wallet];
+                                            });
+
                                         }
                                     }} className="bg-green-600 p-2 text-white font-bold rounded-lg">Add {chain} wallet</button>
                                 </div>

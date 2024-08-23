@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { themeContext } from "./context";
+import { themeContext } from "./ThemeContext";
 
 const ThemeProvider:React.FC<{children:React.ReactNode}> = ({children}) =>{
     const [isDark, setIsDark] = useState(false);

@@ -3,11 +3,13 @@ import { useState } from "react";
 import { generateMnemonic } from "bip39";
 import { validateMnemonic } from "bip39";
 import { useNavigate } from "react-router-dom";
+import { useMnemonicsContext } from "../context/MnemonicsContext";
 
 const Home:React.FC = () => {
     
 
-    const [mnemonics, setMnemonics] = useState<string>("");
+    
+    const {mnemonics, setMnemonics} = useMnemonicsContext();
     const navigate = useNavigate();
     
     return <div className=" min-h-[60%] flex justify-center items-center w-ful ">
@@ -42,10 +44,10 @@ const Home:React.FC = () => {
                 mnemonics.length === 0 || !validateMnemonic(mnemonics)?"":(
                     <div className="w-[80%] flex  justify-center md:justify-start gap-4">
                         <button onClick={()=>{
-                            navigate(`/wallet/sol?mnemonics=${mnemonics}`);
+                            navigate(`/wallet/sol`);
                         }}className="bg-slate-950 w-[150px] text-white dark:bg-white text-xl p-2 md:text-xl font-bold dark:text-black rounded-lg">Solana</button>
                         <button onClick={() => {
-                            navigate(`/wallet/eth?mnemonics=${mnemonics}`);
+                            navigate(`/wallet/eth`);
                         }} className="bg-slate-950 w-[150px] text-white dark:bg-white text-xl p-2 md:text-xl font-bold dark:text-black rounded-lg">Etherium</button>
                     </div>
                 )

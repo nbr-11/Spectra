@@ -2,7 +2,7 @@ import React from "react";
 import Logo from '../logo/Logo'
 import Moon from '../logo/Moon';
 import Sun from '../logo/Sun';
-import { useTheme } from '../context/context';
+import { useTheme } from '../context/ThemeContext';
 import { useEffect } from 'react'
 
 const NavBar:React.FC  = () => {
