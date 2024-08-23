@@ -7,6 +7,7 @@ import { validateMnemonic } from "bip39";
 import Wallet from "./Wallet";
 import { AddEthWallets } from "../utils/Eth";
 import { useMnemonicsContext } from "../context/MnemonicsContext";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -15,7 +16,8 @@ const WalletContainer: React.FC = () => {
     const [wallets, setWallets] = useState<Array<{ public_key: string, private_key: string }>>([]);
     const [activeWallet, setActiveWallet] = useState<{ public_key: string, private_key: string , name:string}>();
     const [isMenuActive, setIsMenuActive] = useState(false);
-    const {mnemonics, setMnemonics} = useMnemonicsContext();
+    const {mnemonics} = useMnemonicsContext();
+    const navigate = useNavigate();
 
     return (
         <div className="w-full min-h-[85%] pt-2">
@@ -31,7 +33,7 @@ const WalletContainer: React.FC = () => {
                         }
 
                     </div>
-                    <button className={`${isMenuActive ? "rotate-180" : ""} transition-all text-black`} onClick={(e) => {
+                    <button className={`${isMenuActive ? "rotate-180" : ""} transition-all text-black`} onClick={() => {
                         setIsMenuActive((prev) => !prev);
                     }}>
                         <DownArrow />
@@ -57,6 +59,8 @@ const WalletContainer: React.FC = () => {
                                         if (chain == "sol") {
                                             if (mnemonics == undefined || !validateMnemonic( mnemonics as string)) {
                                                 alert('not a valid mnemonic');
+                                                navigate('/');
+                                                return;
                                             }
                                             const wallet = AddSolWallet(wallets.length, mnemonics as string);
 
@@ -85,12 +89,10 @@ const WalletContainer: React.FC = () => {
 
                 </div>
             </div>
-            <div>
-
+            <div className="Balance">
+                
             </div>
-            <div>
-
-            </div>
+           
         </div>
     )
 }

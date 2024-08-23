@@ -1,9 +1,8 @@
 import { mnemonicToSeedSync } from "bip39";
 import { derivePath } from "ed25519-hd-key";
-import nacl from "tweetnacl";
 import { Keypair } from "@solana/web3.js";
 import bs58 from "bs58";
-import { HDNodeWallet, Wallet } from "ethers";
+
 
 export function AddSolWallet(index:number, mnemonics:string){
 

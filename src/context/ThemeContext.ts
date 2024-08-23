@@ -1,4 +1,4 @@
-import React,{useState, createContext, useContext } from "react";
+import { createContext, useContext } from "react";
 
 export const themeContext = createContext<{isDark:boolean, toggleTheme:any}>({
     isDark:false,

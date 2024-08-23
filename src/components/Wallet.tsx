@@ -11,7 +11,7 @@ interface props{
     } | undefined>>
 }
 
-const Wallet:React.FC<props> = ({index, wallet, activeWallet, setActiveWallet}) => {
+const Wallet:React.FC<props> = ({index, wallet, setActiveWallet}) => {
 
     return <div onClick={() => {
         setActiveWallet({
