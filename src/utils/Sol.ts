@@ -1,6 +1,6 @@
 import { mnemonicToSeedSync } from "bip39";
 import { derivePath } from "ed25519-hd-key";
-import  { Keypair, PublicKey, clusterApiUrl, Connection, LAMPORTS_PER_SOL, Transaction, SystemProgram, sendAndConfirmTransaction, Signer} from "@solana/web3.js";
+import  { Keypair, PublicKey, clusterApiUrl, Connection, LAMPORTS_PER_SOL, Transaction, SystemProgram, sendAndConfirmTransaction} from "@solana/web3.js";
 import bs58 from "bs58";
 import axios from "axios";
 
@@ -60,7 +60,7 @@ export async function transferSol(from_publicKey:string, to_publicKey:string, pr
 
     transaction.add(
         SystemProgram.transfer({
-            fromPubkey: signer.publicKey,
+            fromPubkey: new PublicKey(from_publicKey),
             toPubkey: new PublicKey(to_publicKey),
             lamports:amount,
         }),
