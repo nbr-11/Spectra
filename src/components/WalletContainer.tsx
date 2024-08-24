@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import DownArrow from "../logo/DownArrow";
-import { AddSolWallet, getAirdrop } from "../utils/Sol";
+import { AddSolWallet, getAirdrop, transferSol } from "../utils/Sol";
 import { validateMnemonic } from "bip39";
 import Wallet from "./Wallet";
 import { AddEthWallets } from "../utils/Eth";
@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { getSolBalance } from "../utils/Sol";
 import Airdrop from "../logo/Airdrop";
 import Close from "../logo/Close";
+import { toast } from "react-toastify";
 
 
 
@@ -151,7 +152,25 @@ const WalletContainer: React.FC = () => {
                         setIsSendActive(false);
                     }} className="text-white absolute top-0 right-0 bg-red-600 p-4 rounded-lg"><Close/></button>
 
-                    <form action="" className="flex flex-col gap-5  p-3 rounded-lg bg-white shadow-lg w-[20rem]">
+                    <form onSubmit={async (e:React.FormEvent) => {
+                        e.preventDefault();
+                        const to_public_key = e.currentTarget.getElementsByTagName("input")[0].value as string;
+                        const amount = e.currentTarget.getElementsByTagName("input")[2].value as string;
+
+                        const transactionHash = transferSol(activeWallet?.private_key as string, to_public_key, activeWallet?.private_key as string, Number(amount));
+                        
+                        toast.success("Transaction Successfull"+transactionHash);
+
+                        e.currentTarget.getElementsByTagName("input")[0].value = "";
+                        e.currentTarget.getElementsByTagName("input")[2].value = "";
+                        
+                        const balance_temp = await getSolBalance(activeWallet?.public_key as string);
+                        setBalance(balance_temp);
+                        
+                        setIsSendActive(false);
+
+
+                    }} action="" className="flex flex-col gap-5  p-3 rounded-lg bg-white shadow-lg w-[20rem]">
 
                         <div className="w-full flex flex-col gap-4">
 
@@ -177,7 +196,9 @@ const WalletContainer: React.FC = () => {
                         </div>
                         
 
-                        <button type="submit" className="p-4 bg-slate-900  text-white rounded-lg text-2xl font-bold">Send</button>
+                        <button onClick={() => {
+                            // transferSol(activeWallet?.public_key as string, ,activeWallet?.private_key as string);
+                        }} type="submit" className="p-4 bg-slate-900  text-white rounded-lg text-2xl font-bold">Send</button>
                     </form>
             </div>
                 ):""

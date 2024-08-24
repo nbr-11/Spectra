@@ -1,6 +1,6 @@
 import { mnemonicToSeedSync } from "bip39";
 import { derivePath } from "ed25519-hd-key";
-import  { Keypair, PublicKey, clusterApiUrl, Connection, LAMPORTS_PER_SOL} from "@solana/web3.js";
+import  { Keypair, PublicKey, clusterApiUrl, Connection, LAMPORTS_PER_SOL, Transaction, SystemProgram, sendAndConfirmTransaction, Signer} from "@solana/web3.js";
 import bs58 from "bs58";
 import axios from "axios";
 
@@ -46,5 +46,27 @@ export async function getAirdrop(public_key:string) {
     )
 
     await connection.confirmTransaction(airDropSignature,"confirmed");
+
+}
+
+
+export async function transferSol(from_publicKey:string, to_publicKey:string, private_key:string, amount:number){
+    let transaction = new Transaction();
+    const connection = new Connection(clusterApiUrl('devnet'),"confirmed");
+    
+    const signer = Keypair.fromSecretKey(bs58.decode(private_key));
+    
+    amount = amount * 1000000000;
+
+    transaction.add(
+        SystemProgram.transfer({
+            fromPubkey: signer.publicKey,
+            toPubkey: new PublicKey(to_publicKey),
+            lamports:amount,
+        }),
+    );
+
+    
+    return await sendAndConfirmTransaction(connection, transaction, [signer]);
 
 }
