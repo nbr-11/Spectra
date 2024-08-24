@@ -1,6 +1,6 @@
 import { mnemonicToSeedSync } from "bip39";
 import { derivePath } from "ed25519-hd-key";
-import { Keypair } from "@solana/web3.js";
+import  { Keypair, PublicKey, clusterApiUrl, Connection, LAMPORTS_PER_SOL} from "@solana/web3.js";
 import bs58 from "bs58";
 import axios from "axios";
 
@@ -32,7 +32,19 @@ export async function getSolBalance(public_key:string){
           }
     )
 
-    console.log(response.data.result.value);
-
     return response.data.result.value * 0.000000001;
+}
+
+
+export async function getAirdrop(public_key:string) {
+    
+    const connection = new Connection(clusterApiUrl('devnet'),"confirmed");
+
+    const airDropSignature = await connection.requestAirdrop(
+        new PublicKey(public_key),
+        5*LAMPORTS_PER_SOL
+    )
+
+    await connection.confirmTransaction(airDropSignature,"confirmed");
+
 }
