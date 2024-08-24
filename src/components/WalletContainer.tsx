@@ -10,6 +10,7 @@ import { useMnemonicsContext } from "../context/MnemonicsContext";
 import { useNavigate } from "react-router-dom";
 import { getSolBalance } from "../utils/Sol";
 import Airdrop from "../logo/Airdrop";
+import Close from "../logo/Close";
 
 
 
@@ -21,6 +22,7 @@ const WalletContainer: React.FC = () => {
     const [isMenuActive, setIsMenuActive] = useState(false);
     const { mnemonics } = useMnemonicsContext();
     const [balance, setBalance] = useState<number>(0);
+    const [isSendActive, setIsSendActive] = useState<boolean>(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -31,7 +33,7 @@ const WalletContainer: React.FC = () => {
 
     }, [activeWallet]);
     return (
-        <div className="w-full pt-2">
+        <div className="w-full pt-2 relative">
             <div className="w-full">
                 <div className="w-[80%] md:w-[60%] relative bg-white border-2 dark:border-0 mx-auto flex justify-between items-center p-2 rounded-lg">
                     <div className="w-[80%] text-black">
@@ -101,18 +103,18 @@ const WalletContainer: React.FC = () => {
                 </div>
             </div>
 
-            <div className="w-full h-[10rem] mt-10 flex flex-col justify-between items-center">
+            <div className="w-full h-[18rem] mt-10 flex flex-col justify-between items-center ">
                 <div className="text-3xl font-bold">
-                    
-                        {
-                            activeWallet != undefined ? (
-                                <>
-                                     <h2 className="text-center">Balance</h2>
-                                     <p className="text-center">{`${(balance)}`}</p>
-                                </>
-                           ): "No Active wallet selected"
-                        }
-                   
+
+                    {
+                        activeWallet != undefined ? (
+                            <>
+                                <h2 className="text-center">Balance</h2>
+                                <p className="text-center">{`${(balance)}`}</p>
+                            </>
+                        ) : "No Active wallet selected"
+                    }
+
                 </div>
 
                 {
@@ -128,7 +130,59 @@ const WalletContainer: React.FC = () => {
                     ) : ""
                 }
 
+                {
+                    activeWallet !== undefined ? (
+                        <div className="w-full p-4 flex justify-center">
+                            <button onClick={async () => {
+                                setIsSendActive((prev) => !prev);
+                            }} className="p-4 rounded-lg text-white bg-black dark:text-black dark:bg-white flex justify-center items-center gap-2">
+                                <span className="font-bold text-xl">Send Token</span>
+                            </button>
+                        </div>
+                    ) : ""
+                }
+
             </div>
+            {
+                isSendActive == true?(
+                    <div className="h-[30rem] w-full bg-white flex justify-center items-center absolute top-0 text-black dark:bg-black">
+                    
+                    <button onClick={() => {
+                        setIsSendActive(false);
+                    }} className="text-white absolute top-0 right-0 bg-red-600 p-4 rounded-lg"><Close/></button>
+
+                    <form action="" className="flex flex-col gap-5  p-3 rounded-lg bg-white shadow-lg w-[20rem]">
+
+                        <div className="w-full flex flex-col gap-4">
+
+                            <h1 className="text-center text-3xl font-bold">Transfer</h1>
+
+                            <div className="flex flex-col gap-1">
+                                <label htmlFor="to-address" className="font-bold text-sm">To</label>
+                                <input id={"to-address"} type="text" className="p-3 text-xl rounded-lg text-black border-2"/>
+                            </div>
+                        
+                            <div className="flex flex-col  gap-1">
+                                <label htmlFor="private-key" className="font-bold text-sm">Private Key</label>
+                                <input id={"private-key"} type="password" value={activeWallet?.private_key} disabled={true} className="p-4 text-xl rounded-lg text-black"/>
+                            </div>
+
+                            <div className="flex flex-col  gap-1">
+                                <label htmlFor="token_no" className="font-bold text-sm">Amount of Token</label>
+                                <input id={"token_no"} type="text" className="p-3 text-xl rounded-lg text-black border-2"/>
+                            </div>
+                        
+
+                        
+                        </div>
+                        
+
+                        <button type="submit" className="p-4 bg-slate-900  text-white rounded-lg text-2xl font-bold">Send</button>
+                    </form>
+            </div>
+                ):""
+            }
+              
 
 
         </div>

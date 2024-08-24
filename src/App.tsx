@@ -2,7 +2,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './App.css'
 import NavBar from './components/NavBar'
-import ThemeProvider from './context/ThemeProvider'
 import MnemonicsProvider from './context/MnemonicsProvider'
 import Home from './page/Home'
 import WalletContainer from './components/WalletContainer'
