@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { useParams} from "react-router-dom";
 import DownArrow from "../logo/DownArrow";
@@ -8,6 +8,8 @@ import Wallet from "./Wallet";
 import { AddEthWallets } from "../utils/Eth";
 import { useMnemonicsContext } from "../context/MnemonicsContext";
 import { useNavigate } from "react-router-dom";
+import { getSolBalance } from "../utils/Sol";
+
 
 
 
@@ -17,10 +19,18 @@ const WalletContainer: React.FC = () => {
     const [activeWallet, setActiveWallet] = useState<{ public_key: string, private_key: string , name:string}>();
     const [isMenuActive, setIsMenuActive] = useState(false);
     const {mnemonics} = useMnemonicsContext();
+    const [balance, setBalance] = useState<number>(0);
     const navigate = useNavigate();
+    
+    useEffect(()=>{
+        getSolBalance(activeWallet?.public_key as string)
+        .then((value)=>{
+            setBalance(Number(value));
+        })
 
+    },[activeWallet]);
     return (
-        <div className="w-full min-h-[85%] pt-2">
+        <div className="w-full pt-2">
             <div className="w-full">
                 <div className="w-[80%] md:w-[60%] relative bg-white border-2 dark:border-0 mx-auto flex justify-between items-center p-2 rounded-lg">
                     <div className="w-[80%] text-black">
@@ -40,7 +50,7 @@ const WalletContainer: React.FC = () => {
                     </button>
                     {
                         isMenuActive ? (
-                            <div className="absolute shadow-lg text-black h-fit flex flex-col justify-between bg-white left-0 top-16 w-[100%] rounded-lg gap-4">
+                            <div className="absolute z-20 shadow-lg text-black h-fit flex flex-col justify-between bg-white left-0 top-16 w-[100%] rounded-lg gap-4">
 
                                 <div className=" flex flex-col gap-4 w-[100%] p-4 h-fit max-h-[16rem] overflow-auto">
                                     {
@@ -89,9 +99,18 @@ const WalletContainer: React.FC = () => {
 
                 </div>
             </div>
-            <div className="Balance">
-                
+
+            <div className="w-full h-[10rem] mt-10 flex justify-center items-center">
+                <div className="text-3xl font-bold">
+                    <h2 className="text-center">Balance</h2>
+                    <p className="text-center">
+                    {
+                        activeWallet!=undefined?`${(balance)}`:"No Active wallet selected"
+                    }
+                    </p>
+                </div>
             </div>
+            
            
         </div>
     )

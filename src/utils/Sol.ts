@@ -2,6 +2,7 @@ import { mnemonicToSeedSync } from "bip39";
 import { derivePath } from "ed25519-hd-key";
 import { Keypair } from "@solana/web3.js";
 import bs58 from "bs58";
+import axios from "axios";
 
 
 export function AddSolWallet(index:number, mnemonics:string){
@@ -20,4 +21,18 @@ export function AddSolWallet(index:number, mnemonics:string){
     }
 }
 
+export async function getSolBalance(public_key:string){
+    const response = await axios.post("https://api.devnet.solana.com",
+        {
+            "jsonrpc": "2.0", "id": 1,
+            "method": "getBalance",
+            "params": [
+             public_key
+            ]
+          }
+    )
 
+    console.log(response.data.result.value);
+
+    return response.data.result.value * 0.000000001;
+}
